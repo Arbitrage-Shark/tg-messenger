@@ -21,7 +21,7 @@ const generateAccountLink = (accountId: any) => {
 export default function Home() {
     const prisma = new PrismaClient();
 
-    const user = "User";
+    const user = "Admin";
 
     const [username, setUsername] = React.useState("");
 
