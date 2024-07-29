@@ -1,7 +1,6 @@
 "use client";
 
 import React, {useEffect} from "react";
-import {Api} from "telegram";
 import {PrismaClient} from "@prisma/client";
 
 const accountList = [
@@ -20,18 +19,38 @@ const generateAccountLink = (accountId: any) => {
 
 export default function Home() {
     const prisma = new PrismaClient();
-
-    const user = "Admin";
-
     const [username, setUsername] = React.useState("");
+    const [accounts, setAccounts] = React.useState([]);
+    // const username2 = request.headers.get('X-User-Username');
 
 
-    // useEffect(() => {
-    //     const fetchedUsername = await prisma.user.findFirstOrThrow(
-    //         {where: {id: 1}}
-    //     ) // TODO fetch username from server
-    //     setUsername(fetchedUsername);
-    // }, []);
+    useEffect(() => {
+        const getUsername = async () => {
+            const response = await fetch('/api/v1/user/me', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+            setUsername(data.username);
+        }
+
+        const getAccounts = async () => {
+            const response = await fetch('/api/v1/telegram/accounts/getAccounts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+            // console.log(data);
+            // setAccounts(data);
+        }
+
+        getUsername();
+        getAccounts();
+    });
 
   return (
       <div className="flex items-center justify-center min-h-screen bg-black">
