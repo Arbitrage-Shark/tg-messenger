@@ -2,6 +2,7 @@
 
 import React, {useEffect} from "react";
 import {Api} from "telegram";
+import {PrismaClient} from "@prisma/client";
 
 const accountList = [
     {
@@ -18,12 +19,19 @@ const generateAccountLink = (accountId: any) => {
 };
 
 export default function Home() {
+    const prisma = new PrismaClient();
+
+    const user = "User";
+
     const [username, setUsername] = React.useState("");
 
-    useEffect(() => {
-        const fetchedUsername = 'Admin'; // TODO fetch username from server
-        setUsername(fetchedUsername);
-    }, []);
+
+    // useEffect(() => {
+    //     const fetchedUsername = await prisma.user.findFirstOrThrow(
+    //         {where: {id: 1}}
+    //     ) // TODO fetch username from server
+    //     setUsername(fetchedUsername);
+    // }, []);
 
   return (
       <div className="flex items-center justify-center min-h-screen bg-black">

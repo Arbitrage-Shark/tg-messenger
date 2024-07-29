@@ -1,35 +1,54 @@
 import { type NextRequest } from 'next/server'
-// import { hashedPassword } from '../../../../utils/hash'
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import crypto from 'crypto'
-
-// const prisma = new PrismaClient()
+import { cookies } from 'next/headers'
 
 export async function POST(request: NextRequest) {
     const formData = await request.formData();
+    const prisma = new PrismaClient();
 
-    const username = formData.get('username');
-    const hashedPassword = hashPassword(<string>formData.get('password'));
+    const username = formData.get('username') as string;
+    const password = formData.get('password') as string;
 
-    if (!username || !hashedPassword) {
-        return Response.json({ message: 'Не все поля заполнены' }, { status: 400 });
-    }
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                username: username
+            }
+        });
+        if (!user) {
 
-    if (username === 'admin' && hashedPassword === hashPassword('password')) {
+            return Response.json({ message: 'Пользователь не найден' }, { status: 404 });
+        }
+
+        const hash = bcrypt.compareSync(password, user.password_hash);
+        if (!hash) {
+            return Response.json({ message: 'Неверные учетные данные' }, { status: 401 });
+        }
+
+        const status = user.status;
+        if (status !== 10) {
+            return Response.json({ message: 'Ваш аккаунт заблокирован' }, { status: 403 });
+        }
+
+        const role = user.role;
+
         const token = jwt.sign(
-            {username},
+            {username, role},
             'secret', // TODO move to env
             {expiresIn: '30d'}
-        );
+        ) as string;
 
-        return Response.json({ token }, { status: 200 });
+        cookies().set('token', token, {
+            name: "token",
+            value: token,
+        });
+
+        return Response.json({token: token}, {status: 200});
+
+    } catch (e) {
+        console.error(e);
+        return Response.json({ message: 'Ошибка сервера' }, { status: 500 });
     }
-
-    return Response.json({ message: 'Неверные учетные данные' }, { status: 401 });
-}
-
-function hashPassword(password: string): string {
-    return crypto.createHash('md5').update(password).digest('hex');
 }

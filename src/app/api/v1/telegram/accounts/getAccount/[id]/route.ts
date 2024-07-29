@@ -1,20 +1,11 @@
-// src/pages/api/accounts/[id].ts
 import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextRequest } from "next/server";
 
-// Пример данных аккаунтов
-const accounts = [
-    { id: 1, username: 'user1', email: 'user1@example.com' },
-    { id: 2, username: 'user2', email: 'user2@example.com' },
-    // Добавьте больше аккаунтов по мере необходимости
-];
+export async function POST(request: NextRequest) {
+    const username = request.headers.get('X-User-Username');
+    return {
+        status: 200,
+        body: `Hello, ${username}!`
+    };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query;
-    const account = accounts.find((acc) => acc.id.toString() === id);
-
-    if (account) {
-        res.status(200).json(account);
-    } else {
-        res.status(404).json({ message: 'Аккаунт не найден' });
-    }
 }
