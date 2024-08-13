@@ -33,7 +33,7 @@ const rl = readline.createInterface({
     });
     console.log("You should now be connected.");
     console.log(client.session.save()); // Save this string to avoid logging in again
-    await client.sendMessage("Vvlad_kushh", { message: "хахахаха! Сорри, тестил мессенджер" });
+    // await client.sendMessage("Vvlad_kushh", { message: "хахахаха! Сорри, тестил мессенджер" });
     // const chats = await client.getDialogs();
     // console.log("Your chats:", chats);
 })();
