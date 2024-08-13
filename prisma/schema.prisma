@@ -7,106 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model audience {
-  id               Int    @id @default(autoincrement())
-  code_id          Int
-  telegram_id      Int
-  wrote            String @db.VarChar(255)
-  lead             String @db.VarChar(255)
-  pixel            String @db.VarChar(255)
-  campaign_id      Int
-  adset_id         Int
-  ad_id            Int
-  campaign_name    String @db.VarChar(255)
-  adset_name       String @db.VarChar(255)
-  ad_name          String @db.VarChar(255)
-  placement        String @db.VarChar(255)
-  site_source_name String @db.VarChar(255)
-  created_at       Int
-  updated_at       Int
+model user {
+  id                Int      @id @default(autoincrement())
+  username          String?
+  password_hash     String
+  authKey           String?  @unique
+  accessToken       String?  @unique
+  role              String   @default("Admin")
+  telegram_accounts String?  @unique
+  status            String   @default("Active")
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(now())
+
+  @@map("user")
 }
 
-model buyers_spend {
-  id          Int @id @default(autoincrement())
-  user_id     Int
-  target_date Int
-  created_at  Int
-  updated_at  Int
-}
-
-model channel {
-  id            Int    @id @default(autoincrement())
-  user_id       Int
-  channel_id    String @db.VarChar(255)
-  account_id    Int
-  code_id       Int
-  tg_channel_id String @db.VarChar(255)
-  bot_token     String @db.VarChar(255)
-  created_at    Int
-  updated_at    Int
-}
-
-model code {
-  id         Int    @id @default(autoincrement())
-  user_id    Int
-  code       String @db.VarChar(255)
-  api_id     String @db.VarChar(255)
-  api_hash   String @db.VarChar(255)
-  created_at Int
-  updated_at Int
-}
-
-model deposite {
-  id             Int    @id @default(autoincrement())
-  deposite       Int
-  channel_id     String @db.VarChar(255)
-  telegram_id    String @db.VarChar(255)
-  payment_system String @db.VarChar(255)
-  payment_type   String @db.VarChar(255)
-  created_at     Int
-  updated_at     Int
-}
-
-model fb_pixel {
-  id         Int     @id @default(autoincrement())
-  pixel      String  @db.VarChar(255)
-  proxy      String? @db.VarChar(255)
-  api_key    String  @db.VarChar(255)
-  channel_id Int
-  user_id    Int
-  created_at Int
-  updated_at Int
-}
-
-model financial {
-  id          Int    @id @default(autoincrement())
-  user_id     Int
-  created_at  Int
-  updated_at  Int
-  amount      Int
-  appointment String @db.VarChar(255)
-}
-
-model migration {
-  version    String @id @db.VarChar(180)
-  apply_time Int?
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model telegram_accounts {
-  id             Int       @default(autoincrement())
-  telegram_id    Int
-  username       String?   @db.VarChar
-  first_name     String?   @db.VarChar
-  last_name      String?   @db.VarChar
-  session_string String?
-  last_online    DateTime? @db.Date
-  users          String?
-
-  @@ignore
-}
-
-model tg_accounts {
+model telegram_account {
   id             Int      @id @default(autoincrement())
   telegram_id    String   @unique
   username       String?
@@ -116,22 +32,7 @@ model tg_accounts {
   session_string String?  @unique
   api_id         String   @unique
   api_hash       String   @unique
-  users          String   @unique @default("admin2")
-  user           user     @relation(fields: [users], references: [username])
+  users          String
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now())
-}
-
-model user {
-  id                 Int           @id @default(autoincrement())
-  username           String        @unique
-  auth_key           String        @unique
-  password_hash      String
-  role               String        @default("mediabayer")
-  status             Int           @default(10)
-  created_at         DateTime      @default(now())
-  updated_at         DateTime      @default(now())
-  verification_token String?
-  auth_token         String?
-  tg_accounts        tg_accounts[]
 }

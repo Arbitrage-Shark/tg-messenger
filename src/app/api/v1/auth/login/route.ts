@@ -4,12 +4,14 @@ import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 
+
 export async function POST(request: NextRequest) {
     const formData = await request.formData();
-    const prisma = new PrismaClient();
 
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
+
+    const prisma = new PrismaClient();
 
     try {
         const user = await prisma.user.findFirst({
@@ -18,7 +20,6 @@ export async function POST(request: NextRequest) {
             }
         });
         if (!user) {
-
             return Response.json({ message: 'Пользователь не найден' }, { status: 404 });
         }
 
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
         }
 
         const status = user.status;
-        if (status !== 10) {
+        if (status !== 'Active') {
             return Response.json({ message: 'Ваш аккаунт заблокирован' }, { status: 403 });
         }
 
@@ -49,6 +50,6 @@ export async function POST(request: NextRequest) {
 
     } catch (e) {
         console.error(e);
-        return Response.json({ message: 'Ошибка сервера' }, { status: 500 });
+        return Response.json({ message: 'Ошибка сервера' + e }, { status: 500 });
     }
 }

@@ -20,6 +20,10 @@ export default function LoginForm() {
                 body: formData
             })
             switch (response.status) {
+                case 200:
+                    const data = await response.json()
+                    localStorage.setItem('token', data.token)
+                    break;
                 case 400:
                     setError("Не все поля заполнены!");
                     throw new Error('Не все поля заполнены!');
