@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 
 interface Account {
     telegram_id: string;
