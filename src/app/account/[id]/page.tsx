@@ -1,24 +1,64 @@
 "use client";
 
 import React, {useEffect} from "react";
-import { HelloWorld } from "@/app/components/telegram/accounts/chatList/component";
-import {PrismaClient} from "@prisma/client";
 
-export default function Page({ params }: { params: { id: string }}) {
-    const prisma = new PrismaClient();
+interface Chat {
+    id: string;
+    title: string;
+}
 
-    const [sessionString, setSessionString] = React.useState("");
+interface Message {
+    id: string;
+    text: string;
+    date: string;
+    senderId: string;
+}
 
+export default function Page({ params }: { params: { id: string } }) {
+
+    const [accounts, setAccounts] = React.useState<Chat[]>([]);
+    const [messeges, setMesseges] = React.useState<Message[]>([]);
     useEffect(() => {
-        if (params.id === "5844277579") {
-            setSessionString("123")
+        const getChats = async () => {
+            const response = await fetch(`/api/v1/telegram/accounts/getChats?id=${params.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            setAccounts(data);
         }
-    }, [params.id]);
+
+        const getMesseges = async () => {
+            const chatId = "445948686";
+            const response = await fetch(`/api/v1/telegram/accounts/getMessages?chatId=${chatId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log(response);
+            // const data = await response.json();
+            // setMesseges(data);
+        }
+
+        getChats().then();
+        getMesseges().then();
+    }, [accounts, params.id]);
+
+
     return (
         <div>
-            <h1>Session string: {sessionString}</h1>
+            {/*<h1>Session string: {session_string}</h1>*/}
             <h2>Account: {params.id}</h2>
-            <HelloWorld />
+            <ul>
+                {accounts.map((account) => (
+                    <li key={account.id}>
+                        <a href={`/account/${account.id}`}>{account.title}</a>
+                    </li>
+                ))}
+            </ul>
         </div>
-    )
+    );
 }

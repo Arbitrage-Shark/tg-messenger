@@ -1,13 +1,12 @@
 "use client";
 
 import React, {useEffect} from "react";
-import {PrismaClient} from "@prisma/client";
 
 interface Account {
     telegram_id: string;
     first_name: string;
     username: string;
-    // другие свойства
+    // any other fields
 }
 
 const generateAccountLink = (accountId: any) => {
@@ -15,11 +14,9 @@ const generateAccountLink = (accountId: any) => {
 };
 
 export default function Home() {
-    const prisma = new PrismaClient();
+    // const prisma = new PrismaClient();
     const [username, setUsername] = React.useState("");
     const [accounts, setAccounts] = React.useState<Account[]>([]);
-    // const username2 = request.headers.get('X-User-Username');
-
 
     useEffect(() => {
         const getUsername = async () => {
@@ -61,6 +58,7 @@ export default function Home() {
                         <li key={account.telegram_id} className="flex items-center justify-between mt-5 p-4 bg-gray-900 rounded-lg shadow-md">
                             <div className="flex items-center space-x-4">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/512px-Telegram_logo.svg.png" alt={account.username} className="w-12 h-12 rounded-full" />
+
                                 <div>
                                     <h4 className="font-bold">{account.first_name}</h4>
                                     <p className="text-sm text-gray-600">{generateAccountLink(account.telegram_id)}</p>
