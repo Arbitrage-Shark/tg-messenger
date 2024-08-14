@@ -1,6 +1,5 @@
 import { TelegramClient } from "telegram";
 import { StringSession } from "telegram/sessions";
-import readline from "readline";
 import {PrismaClient} from "@prisma/client";
 
 // const rl = readline.createInterface({

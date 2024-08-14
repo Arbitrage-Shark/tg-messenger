@@ -1,4 +1,4 @@
-import { getClient } from "@/app/api/v1/telegram/init/route";
+import { getClient } from "@/app/api/v1/telegram/init/getClient";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

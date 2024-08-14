@@ -1,5 +1,5 @@
 // pages/api/v1/telegram/accounts/getMessages.ts
-import { getClient } from "@/app/api/v1/telegram/init/route";
+import { getClient } from "@/app/api/v1/telegram/init/getClient";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
